@@ -3,13 +3,14 @@
 var localStore = chrome.storage.local;
 var threads = [];
 
-localStore.set({sub: "overwatch", activeSubs: []})
-
+localStore.clear(function() { console.log('Cleared localStore.')});
 
 function initThreads(data) {
+    threads = [];
     data.forEach(function (thread) {
         threads.push(thread.data.id);
     });
+    localStore.set({initialize: false});
 }
 
 
@@ -18,18 +19,25 @@ function getData() {
     // Load options from local storage
     localStore.get(function (options) {
         
-        // Get data from reddit
-        $.ajax({
-            url: 'http://reddit.com/r/'+options.sub+'/new/.json',
-            success: function(response) {
-                console.log(response);
-                if (threads.length > 0) {
-                    detectNewThreads(response.data.children);
-                } else {
-                    initThreads(response.data.children);
+        console.log(options.subList);
+        
+        if (options.subList) {
+            
+            // Get data from reddit
+            $.ajax({
+                url: 'http://reddit.com/r/'+options.subList.join('+')+'/new/.json',
+                success: function(response) {
+                    console.log(response);
+                    console.log(options.initialize);
+                    if (options.initialize == true) {
+                        // Run this on to populate threads array
+                        initThreads(response.data.children);
+                    } else {
+                        detectNewThreads(response.data.children);
+                    }
                 }
-            }
-        });
+            });
+        }
     });
 }
 
@@ -53,31 +61,30 @@ function createNotification(thread) {
         var thumb = thread.data.thumbnail;
     }
     
-    var myNotification = new Notify('New Reddit Post [r/'+thread.data.subreddit+'] ', {
-        body: thread.data.title,
-        tag: thread.data.id,
-        notifyClick: function () {
-           chrome.tabs.create({ url: 'http://reddit.com' + thread.data.permalink });
-        },
-        icon: thumb,
-        timeout: 10,
+    localStore.get(function (options) {
+    
+        var myNotification = new Notify('New Reddit Post [r/'+thread.data.subreddit+'] ', {
+            body: thread.data.title,
+            tag: thread.data.id,
+            notifyClick: function () {
+               chrome.tabs.create({ url: 'http://reddit.com' + thread.data.permalink });
+            },
+            icon: thumb,
+            timeout: options.interval = options.interval || 10
+        });
         
+        myNotification.show();
     });
     
-    myNotification.show();
 }
 
-
-function resetSub(newsub) {
-    threads = [];
-    localStore.set({sub: newsub});
-}
-
-
+// Perform initial data pull
+localStore.set({intialize: true});
 getData();
 
 chrome.alarms.create('name', {periodInMinutes: .1});
 
+// Fetch data on interval if extension is set to "on"
 chrome.alarms.onAlarm.addListener(function () {
    getData(); 
 });

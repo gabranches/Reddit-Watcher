@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "Reddit Watcher",
-    "description": "This extension watches a subreddit for new posts, and notifies you when a new post is made.",
+    "description": "Watches subreddits for new posts, and notifies you when a new post is created.",
     "version": "1.0",
     "browser_action": {
         "default_icon": "images/icon16.png",
