@@ -1,10 +1,63 @@
 <!doctype html>
 <html>
   <head>
-    <title>GTmetrix Analyzer</title>
-    <script src="popup.js"></script>
+    <title>Reddit Watcher</title>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+      <link rel="stylesheet" type="text/css" href="style.css" />
+      <script src="lib/jquery-1.12.0.min.js"></script>
   </head>
   <body>
-    <div id="main"></div>
+    <div class="container" id="main">
+        
+        <div class="row">
+        
+            <div class="col-xs-12">
+             <h4>Reddit Watcher</h4>
+                <div id="desc">You will receive a Chrome notification when a new post is detected.</div>
+            
+            </div>
+            
+        </div>
+        
+        
+         <div class="row" id="formrow">
+            <div class="col-xs-12">
+                <form id="mainform" class="form-inline">
+                  <div class="form-group">
+                    <input type="text" class="form-control" id="sub-input" placeholder="Type a subreddit and press enter">
+                  </div>
+                </form>
+            </div>
+        
+        </div>
+        
+        
+        <div class="row">
+            <div class="col-xs-12">
+        
+            </div>
+        </div>
+        
+        <div class="row" id="sublist-header">
+            <div class="col-xs-12">
+                Now watching:
+            </div>
+        </div>
+        
+        
+        <div class="row">
+            <div class="col-xs-12">
+                <div id="sublist">
+                </div>
+            </div>
+        </div>
+      
+    
+      
+      
+    </div>
+      
+      <script src="popup.js"></script>
   </body>
+
 </html>

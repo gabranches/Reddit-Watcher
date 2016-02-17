@@ -1,6 +1,9 @@
 // GLOBALS
+
+var localStore = chrome.storage.local;
 var threads = [];
-var sub = 'overwatch';
+
+localStore.set({sub: "overwatch", activeSubs: []})
 
 
 function initThreads(data) {
@@ -11,24 +14,29 @@ function initThreads(data) {
 
 
 function getData() {
-    $.ajax({
-        url: 'http://reddit.com/r/'+sub+'/new/.json',
-        success: function(response) {
-            if (threads.length > 0) {
-                detectNewThreads(response.data.children);
-            } else {
-                initThreads(response.data.children);
+    
+    // Load options from local storage
+    localStore.get(function (options) {
+        
+        // Get data from reddit
+        $.ajax({
+            url: 'http://reddit.com/r/'+options.sub+'/new/.json',
+            success: function(response) {
+                console.log(response);
+                if (threads.length > 0) {
+                    detectNewThreads(response.data.children);
+                } else {
+                    initThreads(response.data.children);
+                }
             }
-        }
+        });
     });
 }
 
 
 function detectNewThreads(data) {
-    console.log('checking for new threads...');
     data.forEach(function (thread) {
         if (threads.indexOf(thread.data.id) == -1) {
-            console.log(thread);
             createNotification(thread);
             threads.push(thread.data.id);
         }
@@ -39,13 +47,11 @@ function detectNewThreads(data) {
 function createNotification(thread) {
     
     // Check if thumbnail exists for icon
-    if (thread.data.hasOwnProperty("preview")) {
-        var thumb = thread.data.thumbnail;
+    if (thread.data.thumbnail == 'self' || thread.data.thumbnail == 'default') {
+        var thumb = 'images/icon80.png';
     } else {
-        var thumb = null;
+        var thumb = thread.data.thumbnail;
     }
-    
-    console.log(thumb);
     
     var myNotification = new Notify('New Reddit Post [r/'+thread.data.subreddit+'] ', {
         body: thread.data.title,
@@ -53,7 +59,9 @@ function createNotification(thread) {
         notifyClick: function () {
            chrome.tabs.create({ url: 'http://reddit.com' + thread.data.permalink });
         },
-        icon: thumb
+        icon: thumb,
+        timeout: 10,
+        
     });
     
     myNotification.show();
@@ -62,7 +70,7 @@ function createNotification(thread) {
 
 function resetSub(newsub) {
     threads = [];
-    sub = newsub
+    localStore.set({sub: newsub});
 }
 
 
@@ -73,6 +81,8 @@ chrome.alarms.create('name', {periodInMinutes: .1});
 chrome.alarms.onAlarm.addListener(function () {
    getData(); 
 });
+
+
 
 
 

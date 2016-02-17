@@ -1,0 +1,20 @@
+
+body {
+
+}
+
+#main {
+    width: 300px;
+}
+
+#desc {
+    font-size: 12px;
+}
+
+#formrow {
+    margin-top: 10px;
+}
+
+#sublist-header {
+    font-weight: bold;
+}
