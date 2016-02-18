@@ -31,6 +31,7 @@ function getData() {
                 success: function(response) {
                     console.log(response);
                     console.log(options.initialize);
+                    console.log(threads.length);
                     if (options.initialize == true) {
                         // Run this on to populate threads array
                         initThreads(response.data.children);
@@ -57,7 +58,7 @@ function detectNewThreads(data) {
 function createNotification(thread) {
     
     // Check if thumbnail exists for icon
-    if (thread.data.thumbnail == 'self' || thread.data.thumbnail == 'default') {
+    if (thread.data.thumbnail === 'self' || thread.data.thumbnail === 'default' || thread.data.thumbnail === '') {
         var thumb = 'images/icon80.png';
     } else {
         var thumb = thread.data.thumbnail;
@@ -81,10 +82,9 @@ function createNotification(thread) {
 }
 
 // Perform initial data pull
-localStore.set({intialize: true}, function () {
+localStore.set({intialize: true, subList: []}, function () {
     threads = [];
     getData();
-    
 });
 
 chrome.alarms.create('name', {periodInMinutes: .25});
