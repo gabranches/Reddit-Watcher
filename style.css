@@ -1,10 +1,17 @@
 
 body {
+/*    background-color: rgba(0, 255, 169, 0.07);*/
 
 }
 
 #main {
     width: 300px;
+}
+
+#title {
+    font-size: 16px;
+    top: 6px;
+    font-weight: bold;
 }
 
 #desc {
@@ -15,16 +22,44 @@ body {
     margin-top: 10px;
 }
 
-#sublist-header {
+#sublist {
+    margin-bottom: 10px;
+}
+
+.header {
     font-weight: bold;
+}
+
+#on-button {
+    width: 80px;
 }
 
 .sublist-item {
     margin-left: 10px;
+    padding: 5px;
 }
 
 .container {
-    border: 1px solid black;
+/*    border: 1px solid black;*/
     padding-bottom: 20px;
     padding-top: 10px;
+}
+
+#top-menu {
+    height: 50px;
+}
+
+.btn:focus {
+  outline: none;
+}
+
+label {
+    margin-top: 5px;
+    font-size: 12px;
+}
+
+.glyphicon-remove-circle {
+    color: red;
+    margin-right: 5px;
+    cursor: pointer;
 }

@@ -3,7 +3,6 @@
 var localStore = chrome.storage.local;
 var threads = [];
 
-localStore.clear(function() { console.log('Cleared localStore.')});
 
 function initThreads(data) {
     threads = [];
@@ -19,10 +18,9 @@ function getData() {
     // Load options from local storage
     localStore.get(function (options) {
         
-        console.log(options.subList);
-        
-        if (options.subList) {
+        if (options.subList && options.state === 'on') {
             
+            console.log(options.subList);
             // Get data from reddit
             $.ajax({
                 url: 'http://reddit.com/r/'+options.subList.join('+')+'/new/.json',
