@@ -5,6 +5,7 @@ var subList = [];
 
 
 localStore.get(function (options) {
+    
     if (options.subList) {
         subList = options.subList;
         initialize(subList);
@@ -35,7 +36,7 @@ function addSub(sub) {
 
 
 function sublistTemplate(sub) {
-    var template = '<div class="sublist-item" id="'+sub+'-div"><span class="glyphicon glyphicon-remove-circle"></span><a target="_blank" href="http://reddit.com/r/'+sub+'">r/'+sub+'</a></div></div>';
+    var template = '<div data-sub="'+sub+'" class="sublist-item" id="'+sub+'-div"><span class="glyphicon glyphicon-remove-circle"></span><a target="_blank" href="http://reddit.com/r/'+sub+'">r/'+sub+'</a></div></div>';
     return template;
 }
 
@@ -59,12 +60,43 @@ $("#on-button").on('click', function () {
 });
 
 
+// Remove sub
+$(document).on('click', '.glyphicon-remove-circle', function () {
+    
+    var index = subList.indexOf($(this).parent().attr('data-sub'));
+    
+    if (index > -1) { 
+        subList.splice(index, 1); 
+        localStore.set({subList: subList, initialize: true});
+    }
+    $(this).parent().remove();
+    
+});
+
+
+$('#section-select').on('change', function () {
+   localStore.set({section: $(this).val(), initialize: true}); 
+});
+
+$('#interval-select').on('change', function () {
+   localStore.set({interval: $(this).val(), initialize: true}); 
+});
+
+
 function run() {
     localStore.get(function (options) {
         if (options.state === 'on') {
             enable();
         } else {
             disable();
+        }
+        
+        if (options.section) {
+            $('#section-select option[value="'+options.section+'"]').prop('selected', true);
+        }
+        
+         if (options.interval) {
+            $('#interval-select option[value="'+options.interval+'"]').prop('selected', true);
         }
     });
 }

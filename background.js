@@ -20,10 +20,12 @@ function getData() {
         
         if (options.subList && options.state === 'on') {
             
+            var section = options.section || 'new';
             console.log(options.subList);
+            
             // Get data from reddit
             $.ajax({
-                url: 'http://reddit.com/r/'+options.subList.join('+')+'/new/.json',
+                url: 'http://reddit.com/r/'+options.subList.join('+')+'/'+section+'/.json',
                 success: function(response) {
                     console.log(response);
                     console.log(options.initialize);
@@ -80,7 +82,7 @@ function createNotification(thread) {
 localStore.set({intialize: true});
 getData();
 
-chrome.alarms.create('name', {periodInMinutes: .1});
+chrome.alarms.create('name', {periodInMinutes: .25});
 
 // Fetch data on interval if extension is set to "on"
 chrome.alarms.onAlarm.addListener(function () {
