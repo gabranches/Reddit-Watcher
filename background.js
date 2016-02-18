@@ -18,14 +18,16 @@ function getData() {
     // Load options from local storage
     localStore.get(function (options) {
         
-        if (options.subList && options.state === 'on') {
+        if (options.subList.length > 0 && options.state === 'on') {
             
             var section = options.section || 'new';
+            var url = 'http://reddit.com/r/'+options.subList.join('+')+'/'+section+'/.json';
             console.log(options.subList);
+            console.log(url);
             
             // Get data from reddit
             $.ajax({
-                url: 'http://reddit.com/r/'+options.subList.join('+')+'/'+section+'/.json',
+                url: url,
                 success: function(response) {
                     console.log(response);
                     console.log(options.initialize);
@@ -79,8 +81,11 @@ function createNotification(thread) {
 }
 
 // Perform initial data pull
-localStore.set({intialize: true});
-getData();
+localStore.set({intialize: true}, function () {
+    threads = [];
+    getData();
+    
+});
 
 chrome.alarms.create('name', {periodInMinutes: .25});
 

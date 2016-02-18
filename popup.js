@@ -85,10 +85,10 @@ $('#interval-select').on('change', function () {
 
 function run() {
     localStore.get(function (options) {
-        if (options.state === 'on') {
-            enable();
-        } else {
+        if (options.state === 'off') {
             disable();
+        } else {
+            enable();
         }
         
         if (options.section) {
@@ -98,6 +98,7 @@ function run() {
          if (options.interval) {
             $('#interval-select option[value="'+options.interval+'"]').prop('selected', true);
         }
+
     });
 }
 
