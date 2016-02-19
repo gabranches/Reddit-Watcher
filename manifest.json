@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "Reddit Watcher",
     "description": "Watches subreddits for new posts, and notifies you when a new post is created.",
-    "version": "1.0",
+    "version": "1.1",
     "browser_action": {
         "default_icon": "images/icon16.png",
         "default_popup": "popup.html"
@@ -12,7 +12,8 @@
         "http://reddit.com/*",
         "https://reddit.com/*",
         "alarms",
-        "storage"
+        "storage",
+        "notifications"
     ],
     "icons": {
         "16": "images/icon16.png",
