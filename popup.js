@@ -5,7 +5,6 @@ var subList = [];
 
 
 localStore.get(function (options) {
-    
     if (options.subList) {
         subList = options.subList;
         initialize(subList);
@@ -18,6 +17,7 @@ function initialize(subList) {
         addSub(sub);
     })
 }
+
 
 function mainFormSubmit() {
     event.preventDefault();
@@ -78,6 +78,7 @@ $('#section-select').on('change', function () {
    localStore.set({section: $(this).val(), initialize: true}); 
 });
 
+
 $('#interval-select').on('change', function () {
    localStore.set({interval: $(this).val(), initialize: true}); 
 });
@@ -85,6 +86,7 @@ $('#interval-select').on('change', function () {
 
 function run() {
     localStore.get(function (options) {
+        
         if (options.state === 'off') {
             disable();
         } else {
@@ -101,6 +103,7 @@ function run() {
 
     });
 }
+
 
 run();
 

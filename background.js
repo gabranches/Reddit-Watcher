@@ -1,7 +1,25 @@
 // GLOBALS
-
 var localStore = chrome.storage.local;
 var threads = [];
+
+localStore.set({debug: true});
+
+chrome.alarms.create('name', {periodInMinutes: 1});
+
+// Fetch data on interval if extension state is set to "on"
+chrome.alarms.onAlarm.addListener(function () {
+    localStore.get(function (options) {
+        if (options.state === 'on') {
+            getData(); 
+        }
+    });
+});
+
+
+// Run getData when a variable is changed to reset the threads array
+chrome.storage.onChanged.addListener(function (changes) {
+    getData();
+});
 
 
 function initThreads(data) {
@@ -18,20 +36,19 @@ function getData() {
     // Load options from local storage
     localStore.get(function (options) {
         
-        if (options.subList.length > 0 && options.state === 'on') {
+        if (options.subList.length > 0) {
             
             var section = options.section || 'new';
             var url = 'http://reddit.com/r/'+options.subList.join('+')+'/'+section+'/.json';
-            console.log(options.subList);
-            console.log(url);
+            debug(options.subList);
+            debug(url);
             
             // Get data from reddit
             $.ajax({
                 url: url,
                 success: function(response) {
-                    console.log(response);
-                    console.log(options.initialize);
-                    console.log(threads.length);
+                    debug(response);
+                    debug(options.initialize);
                     if (options.initialize == true) {
                         // Run this on to populate threads array
                         initThreads(response.data.children);
@@ -50,6 +67,7 @@ function detectNewThreads(data) {
         if (threads.indexOf(thread.data.id) == -1) {
             createNotification(thread);
             threads.push(thread.data.id);
+            debug(thread.data.id);
         }
     });
 }
@@ -73,7 +91,7 @@ function createNotification(thread) {
                chrome.tabs.create({ url: 'http://reddit.com' + thread.data.permalink });
             },
             icon: thumb,
-            timeout: options.interval = options.interval || 10
+            timeout: options.interval = options.interval || 20
         });
         
         myNotification.show();
@@ -81,20 +99,11 @@ function createNotification(thread) {
     
 }
 
-// Perform initial data pull
-localStore.set({intialize: true, subList: []}, function () {
-    threads = [];
-    getData();
-});
-
-chrome.alarms.create('name', {periodInMinutes: .25});
-
-// Fetch data on interval if extension is set to "on"
-chrome.alarms.onAlarm.addListener(function () {
-   getData(); 
-});
-
-
-
-
+function debug(msg) {
+    localStore.get(function (options) {
+       if (options.debug === true) {
+           console.log(msg);
+       } 
+    });
+}
 
