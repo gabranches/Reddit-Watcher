@@ -3,6 +3,7 @@ document.getElementById('mainform').addEventListener('submit', mainFormSubmit);
 var localStore = chrome.storage.local;
 var subList = [];
 
+console.log('Ran popup.js');
 
 localStore.get(function (options) {
     if (options.subList) {
@@ -80,7 +81,7 @@ $('#section-select').on('change', function () {
 
 
 $('#interval-select').on('change', function () {
-   localStore.set({interval: $(this).val(), initialize: true}); 
+   localStore.set({interval: $(this).val()}); 
 });
 
 

@@ -1,62 +1,95 @@
 // GLOBALS
 var localStore = chrome.storage.local;
 var threads = [];
+var initialize = true;
+var lastQueryTime = Date.now();
 
-localStore.set({debug: true});
-
+debug('Ran background.js');
+localStore.set({debug: true, lastQueryTime: Date.now()/1000});
 chrome.alarms.create('name', {periodInMinutes: 1});
 
 // Fetch data on interval if extension state is set to "on"
 chrome.alarms.onAlarm.addListener(function () {
     localStore.get(function (options) {
         if (options.state === 'on') {
-            getData(); 
+            validateRequest(); 
         }
     });
 });
 
 
-// Run getData when a variable is changed to reset the threads array
+// Run watch for localStore changes
 chrome.storage.onChanged.addListener(function (changes) {
-    getData();
+    
+    // Run request on sublist and section update
+    if (changes.hasOwnProperty('subList') || changes.hasOwnProperty('section')) {
+        debug('Detected change in settings.');
+        validateRequest();
+    }
+    
+    // Update initialize on change
+    if (changes.hasOwnProperty('initialize')) {
+        initialize = changes.initialize.newValue;
+    }
+    
+    
 });
 
-
+// Initializes a new threads array
 function initThreads(data) {
     threads = [];
     data.forEach(function (thread) {
         threads.push(thread.data.id);
     });
-    localStore.set({initialize: false});
+    initialize = false;
 }
 
 
-function getData() {
+// Set request options and check if we should pull data 
+function validateRequest() {
+   
+    // Check time difference
+
+    if ((Date.now()/1000 - lastQueryTime) > 90) {
+        initialize = true;
+    }
     
-    // Load options from local storage
+    lastQueryTime = Date.now()/1000;
+
     localStore.get(function (options) {
-        
-        if (options.subList.length > 0) {
+        // Get new data if there is a subList
+        if (options.subList) {
+            if (options.subList.length > 0) {
+                getRedditData(options);
+            }
+        }
+    });
+
+}
+
+function getRedditData(options) {
+    var section = options.section || 'new';
+    var url = 'http://reddit.com/r/'+options.subList.join('+')+'/'+section+'/.json';
+    debug('Getting subs: ' + options.subList.join(','));
+    debug('Query url: ' + url);
+    
+    // Get data from reddit
+    $.ajax({
+        url: url,
+        success: function(response) {
+
+            debug('Found ' + response.data.children.length + ' threads.');
             
-            var section = options.section || 'new';
-            var url = 'http://reddit.com/r/'+options.subList.join('+')+'/'+section+'/.json';
-            debug(options.subList);
-            debug(url);
-            
-            // Get data from reddit
-            $.ajax({
-                url: url,
-                success: function(response) {
-                    debug(response);
-                    debug(options.initialize);
-                    if (options.initialize == true) {
-                        // Run this on to populate threads array
-                        initThreads(response.data.children);
-                    } else {
-                        detectNewThreads(response.data.children);
-                    }
-                }
-            });
+            if (initialize === true) {
+                // Run this on to populate threads array
+                debug('Initializing new thread list.');
+                initThreads(response.data.children);
+                localStore.set({initialize: false});
+                initialize = false;
+            } else {
+                debug('Detecting new threads.');
+                detectNewThreads(response.data.children);
+            }
         }
     });
 }
@@ -65,9 +98,9 @@ function getData() {
 function detectNewThreads(data) {
     data.forEach(function (thread) {
         if (threads.indexOf(thread.data.id) == -1) {
+            debug('Creating notification for thread "' + thread.data.title + '"');
             createNotification(thread);
             threads.push(thread.data.id);
-            debug(thread.data.id);
         }
     });
 }
@@ -93,12 +126,13 @@ function createNotification(thread) {
             icon: thumb,
             timeout: options.interval = options.interval || 20
         });
-        
         myNotification.show();
     });
     
 }
 
+
+// Console log when debug is on
 function debug(msg) {
     localStore.get(function (options) {
        if (options.debug === true) {
