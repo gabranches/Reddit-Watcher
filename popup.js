@@ -1,6 +1,6 @@
 document.getElementById('mainform').addEventListener('submit', mainFormSubmit);
 
-var localStore = chrome.storage.local;
+var localStore = chrome.storage.sync;
 var subList = [];
 
 console.log('Ran popup.js');
@@ -37,7 +37,7 @@ function addSub(sub) {
 
 
 function sublistTemplate(sub) {
-    var template = '<div data-sub="'+sub+'" class="sublist-item" id="'+sub+'-div"><span class="glyphicon glyphicon-remove-circle"></span><a target="_blank" href="http://reddit.com/r/'+sub+'">r/'+sub+'</a></div></div>';
+    var template = '<div data-sub="'+sub+'" class="sublist-item" id="'+sub+'-div"><span class="glyphicon glyphicon-remove"></span><a target="_blank" href="http://reddit.com/r/'+sub+'">'+sub+'</a></div></div>';
     return template;
 }
 
@@ -45,7 +45,7 @@ function sublistTemplate(sub) {
 function disable() {
     localStore.set({state: 'off'});
     $("#on-button").html('disabled'); 
-    $("#on-button").attr('class', 'btn btn-danger'); 
+    $("#on-button").attr('class', 'btn btn-danger');
 }
 
 
@@ -62,7 +62,7 @@ $("#on-button").on('click', function () {
 
 
 // Remove sub
-$(document).on('click', '.glyphicon-remove-circle', function () {
+$(document).on('click', '.glyphicon-remove', function () {
     
     var index = subList.indexOf($(this).parent().attr('data-sub'));
     
@@ -88,17 +88,13 @@ $('#interval-select').on('change', function () {
 function run() {
     localStore.get(function (options) {
         
-        if (options.state === 'off') {
-            disable();
-        } else {
-            enable();
-        }
+        options.state === 'off' ? disable() : enable();
         
         if (options.section) {
             $('#section-select option[value="'+options.section+'"]').prop('selected', true);
         }
         
-         if (options.interval) {
+        if (options.interval) {
             $('#interval-select option[value="'+options.interval+'"]').prop('selected', true);
         }
 

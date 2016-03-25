@@ -1,12 +1,16 @@
 // GLOBALS
-var localStore = chrome.storage.local;
+var localStore = chrome.storage.sync;
 var threads = [];
 var initialize = true;
 var lastQueryTime = Date.now();
 
 debug('Ran background.js');
 localStore.set({debug: true, lastQueryTime: Date.now()/1000});
-chrome.alarms.create('name', {periodInMinutes: 1});
+chrome.alarms.create('name', {periodInMinutes: .1});
+
+localStore.get(function(options) {
+    console.log(options);
+});
 
 // Fetch data on interval if extension state is set to "on"
 chrome.alarms.onAlarm.addListener(function () {
@@ -61,7 +65,9 @@ function validateRequest() {
         if (options.subList) {
             if (options.subList.length > 0) {
                 getRedditData(options);
-            }
+            } 
+        } else {
+            localStore.set({subList: []});
         }
     });
 
