@@ -26,6 +26,7 @@
 
 #on-button {
     width: 80px;
+    margin-top: 5px;
 }
 
 .sublist-item {
@@ -63,6 +64,7 @@ label {
     border-radius: 0px;
     height: 30px;
     padding: 5px 8px;
+    font-size: 12px;
 }
 
 .btn {
@@ -73,4 +75,8 @@ label {
 #help {
     font-size: 10px;
     margin-top: 20px;
+}
+
+#now-watching {
+    margin-top: 5px;
 }
