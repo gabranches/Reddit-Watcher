@@ -72,11 +72,25 @@ label {
     padding: 4px 8px;
 }
 
-#help {
-    font-size: 10px;
+.help {
+    font-size: 11px;
     margin-top: 20px;
 }
 
 #now-watching {
     margin-top: 5px;
+}
+
+#test {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+#warn {
+    display: none;
+    color: red;
+}
+
+#now-watching {
+    display: none;
 }

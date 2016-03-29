@@ -31,6 +31,7 @@ function mainFormSubmit() {
 
 
 function addSub(sub) { 
+    $('#now-watching').show();
     $('#sublist').append(sublistTemplate(sub));
     localStore.set({subList: subList, initialize: true});
 }
@@ -72,11 +73,30 @@ $(document).on('click', '.glyphicon-remove', function () {
     }
     $(this).parent().remove();
     
+    if (subList.length === 0) {
+        $("#now-watching").hide();
+    }
+    
 });
 
 
 $('#section-select').on('change', function () {
-   localStore.set({section: $(this).val(), initialize: true}); 
+   localStore.set({section: $(this).val(), initialize: true});
+   $(this).val() === "hot" ? $("#warn").show() : $("#warn").hide();
+});
+
+$('#test').on('click', function () {
+    console.log('click');
+    localStore.set({
+        testNotification: {
+            data: {
+                title: "Test notification!",
+                thumbnail: "self",
+                time: Date.now(),
+                subreddit: "test"
+            }
+        }
+    }); 
 });
 
 

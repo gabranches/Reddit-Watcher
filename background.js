@@ -4,13 +4,9 @@ var threads = [];
 var initialize = true;
 var lastQueryTime = Date.now();
 
-debug('Ran background.js');
 localStore.set({debug: true, lastQueryTime: Date.now()/1000});
-chrome.alarms.create('name', {periodInMinutes: .1});
+chrome.alarms.create('name', {periodInMinutes: 1});
 
-localStore.get(function(options) {
-    console.log(options);
-});
 
 // Fetch data on interval if extension state is set to "on"
 chrome.alarms.onAlarm.addListener(function () {
@@ -29,6 +25,12 @@ chrome.storage.onChanged.addListener(function (changes) {
     if (changes.hasOwnProperty('subList') || changes.hasOwnProperty('section')) {
         debug('Detected change in settings.');
         validateRequest();
+    }
+    
+    // Test notification
+    if (changes.hasOwnProperty('testNotification')) {
+        debug('Testing notification.');
+        createNotification(changes.testNotification.newValue);
     }
     
     // Update initialize on change
@@ -53,7 +55,6 @@ function initThreads(data) {
 function validateRequest() {
    
     // Check time difference
-
     if ((Date.now()/1000 - lastQueryTime) > 90) {
         initialize = true;
     }
