@@ -4,8 +4,10 @@ var threads = [];
 var initialize = true;
 var lastQueryTime = Date.now();
 
-localStore.set({debug: true, lastQueryTime: Date.now()/1000});
-chrome.alarms.create('name', {periodInMinutes: 1});
+// Initialize 
+localStore.set({debug: false, lastQueryTime: Date.now()/1000});
+// Check every minute for changes
+chrome.alarms.create('checkForChanges', {periodInMinutes: 1});
 
 
 // Fetch data on interval if extension state is set to "on"
@@ -30,7 +32,9 @@ chrome.storage.onChanged.addListener(function (changes) {
     // Test notification
     if (changes.hasOwnProperty('testNotification')) {
         debug('Testing notification.');
-        createNotification(changes.testNotification.newValue);
+        if (changes.testNotification.newValue.data.type === "test") {
+            createNotification(changes.testNotification.newValue);
+        }
     }
     
     // Update initialize on change
@@ -74,6 +78,7 @@ function validateRequest() {
 
 }
 
+// Pull data from reddit using the API
 function getRedditData(options) {
     var section = options.section || 'new';
     var url = 'http://reddit.com/r/'+options.subList.join('+')+'/'+section+'/.json';
@@ -101,7 +106,7 @@ function getRedditData(options) {
     });
 }
 
-
+// See if there are new threads and create a notification for those
 function detectNewThreads(data) {
     data.forEach(function (thread) {
         if (threads.indexOf(thread.data.id) == -1) {
@@ -113,6 +118,7 @@ function detectNewThreads(data) {
 }
 
 
+// Generate notifications
 function createNotification(thread) {
     
     // Check if thumbnail exists for icon

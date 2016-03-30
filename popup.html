@@ -24,25 +24,14 @@
                 <div id="desc">You will receive a Chrome notification when a new post is detected.</div>
             </div>
         </div>
-
-            
         
-        
-         <div class="row" id="formrow">
+        <div class="row" id="formrow">
             <div class="col-xs-12">
                 <form id="mainform" class="form-inline">
-                  <div class="form-group">
-                    <input type="text" class="form-control" id="sub-input" placeholder="Type a subreddit name and press enter">
-                  </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="sub-input" placeholder="Type a subreddit name and press enter">
+                    </div>
                 </form>
-            </div>
-        
-        </div>
-        
-        
-        <div class="row">
-            <div class="col-xs-12">
-        
             </div>
         </div>
         
@@ -51,7 +40,6 @@
                 Now watching:
             </div>
         </div>
-        
         
         <div class="row">
             <div class="col-xs-12">
@@ -62,46 +50,40 @@
         
         <div class="row">
             <div class="col-xs-6">
-                    <label>Section to watch:</label>
-                    <select class="form-control" id="section-select">
-                      <option value="new" selected>new</option>
-                      <option value="rising">rising</option>
-                      <option value="hot">front page</option>
-                    </select>
-                </div>
+                <label>Section to watch:</label>
+                <select class="form-control" id="section-select">
+                    <option value="new" selected>new</option>
+                    <option value="rising">rising</option>
+                    <option value="hot">front page</option>
+                </select>
+            </div>
             
             <div class="col-xs-6">
-             <label>Popup duration:</label>
-                    <select class="form-control" id="interval-select">
-                      <option value="3">3 sec</option>
-                      <option value="5">5 sec</option>
-                      <option value="10">10 sec</option>
-                      <option value="20" selected>20 sec</option>
-                      <option value="30">30 sec</option>
-                      <option value="60">60 sec</option>
-                    </select>
+                <label>Popup duration:</label>
+                <select class="form-control" id="interval-select">
+                    <option value="3">3 sec</option>
+                    <option value="5">5 sec</option>
+                    <option value="10">10 sec</option>
+                    <option value="20" selected>20 sec</option>
+                    <option value="30">30 sec</option>
+                    <option value="60">60 sec</option>
+                </select>
             </div>
-            </div>
-      
-            <div id="warn" class="help row">
-                <div class="col-xs-12">
-                    Note: The "front page" setting works best when monitoring only one subreddit.
-                </div>
-            </div>
-            
-            <div class="help row">
-                <div class="col-xs-12">
-                    <span id="test"><a href="">Test Notification</a></span>
-                    <a target="_blank" href="https://support.google.com/chrome/answer/3220216?hl=en">Not seeing any notifications?</a>
-                </div>
-            </div>
-            
         </div>
-      
-      
+    
+        <div id="warn" class="help row">
+            <div class="col-xs-12">
+                Note: The "front page" setting works best when watching a single subreddit.
+            </div>
+        </div>
+            
+        <div class="help row">
+            <div class="col-xs-12">
+                <span id="test"><a href="">Test Notification</a></span>
+                <a target="_blank" href="https://support.google.com/chrome/answer/3220216?hl=en">Not seeing any notifications?</a>
+            </div>
+        </div>
     </div>
-      
-      <script src="popup.js"></script>
-  </body>
-
+    <script src="popup.js"></script>
+</body>
 </html>
